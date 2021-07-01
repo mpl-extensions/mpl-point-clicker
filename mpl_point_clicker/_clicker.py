@@ -117,14 +117,9 @@ class clicker:
     def _clicked(self, event):
         if not self._fig.canvas.widgetlock.available(self):
             return
-        print('in clicked')
         if event.inaxes is self.ax:
-            print('in inaxes')
-            print(event.button)
             if event.button is MouseButton.LEFT:
-                print('in here!')
                 self._positions[self._current_class].append((event.xdata, event.ydata))
-                print(self._positions[self._current_class])
                 self._update_points(self._current_class)
             elif event.button is MouseButton.RIGHT:
                 pos = self._positions[self._current_class]
