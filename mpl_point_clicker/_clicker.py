@@ -103,7 +103,11 @@ class clicker:
     def _on_pick(self, event):
         # On the pick event, find the original line corresponding to the legend
         # proxy line, and toggle its visibility.
-        klass = self._leg_artists[event.artist]
+        try:
+            klass = self._leg_artists[event.artist]
+        except KeyError:
+            # some pick event not on our legend
+            return
         self._current_class = klass
         self._update_legend_alpha()
 
