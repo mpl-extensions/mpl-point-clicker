@@ -89,7 +89,11 @@ class clicker:
             legtext.set_picker(pick_dist)
             self._leg_artists[legtext] = klass
             self._leg_artists[legline] = klass
-            self._class_leg_artists[klass] = (legline, legline._legmarker, legtext)
+            try:
+                # mpl < 3.5
+                self._class_leg_artists[klass] = (legline, legline._legmarker, legtext)
+            except AttributeError:
+                self._class_leg_artists[klass] = (legline, legtext)
 
         self._fig = self.ax.figure
         self._fig.canvas.mpl_connect("button_press_event", self._clicked)
