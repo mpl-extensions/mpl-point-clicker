@@ -32,4 +32,3 @@ Before creating a new feature request please search the issues for relevant feat
 
 * Another project [...] solved this by [...]
 -->
-

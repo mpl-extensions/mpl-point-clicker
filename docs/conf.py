@@ -23,7 +23,6 @@ copyright = '2021, Ian Hunt-Isaak'
 author = 'Ian Hunt-Isaak'
 
 # The full version, including alpha/beta/rc tags
-from _version import __version__ as release
 
 
 # -- General configuration ---------------------------------------------------

@@ -5,19 +5,19 @@
 
 .. autoclass:: clicker
 
-   
+
    .. automethod:: __init__
 
-   
+
    .. rubric:: Methods
 
    .. autosummary::
-   
+
       ~clicker.__init__
       ~clicker.get_positions
-   
-   
 
-   
-   
-   
+
+
+
+
+

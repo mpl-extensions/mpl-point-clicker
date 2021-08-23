@@ -7,10 +7,10 @@ A short example showcasing how to use the library. The docstrings will be
 turns in REST by sphinx-gallery.
 """
 
-import numpy as np
 import matplotlib.pyplot as plt
-from mpl_point_clicker import clicker
+import numpy as np
 
+from mpl_point_clicker import clicker
 
 image = np.load('example_image.npy')
 
