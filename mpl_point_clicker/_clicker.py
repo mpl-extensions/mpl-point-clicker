@@ -1,5 +1,4 @@
 #!/usr/bin/env python
-# coding: utf-8
 
 # Copyright (c) Ian Hunt-Isaak.
 # Distributed under the terms of the Modified BSD License.
@@ -7,9 +6,10 @@
 __all__ = [
     "clicker",
 ]
+from numbers import Integral
+
 import numpy as np
 from matplotlib.backend_bases import MouseButton
-from numbers import Integral
 
 
 class clicker:
