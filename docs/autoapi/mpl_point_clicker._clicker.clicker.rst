@@ -15,9 +15,3 @@
 
       ~clicker.__init__
       ~clicker.get_positions
-
-
-
-
-
-
