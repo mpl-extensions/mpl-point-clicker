@@ -25,7 +25,7 @@ Now clone your fork of the Git repository and make an editable (``-e``) install.
 
    git clone <your fork>
    cd mpl-point-clicker
-   pip install -e ".[dev]"
+   pip install -e ".[test, doc]"
 
 
 Working with Git

@@ -10,6 +10,7 @@ from numbers import Integral
 
 import numpy as np
 from matplotlib.backend_bases import MouseButton
+from matplotlib.cbook import CallbackRegistry
 
 
 class clicker:
@@ -100,9 +101,31 @@ class clicker:
         self._fig.canvas.mpl_connect("pick_event", self._on_pick)
         self._positions = {c: [] for c in self._classes}
         self._update_legend_alpha()
+        self._observers = CallbackRegistry()
 
-    def get_positions(self, copy=True):
+    def get_positions(self):
         return {k: np.asarray(v) for k, v in self._positions.items()}
+
+    def set_positions(self, positions):
+        """
+        Set the current positions for all classes.
+
+        Parameters
+        ----------
+        positions : dict
+            A dictionary with strings as keys and 2D array-like values. The values
+            will be interpreted as (N, 2) with x, y as the columns. The keys in
+            the dictionary must all be valid classes. If a class is not included in
+            *positions* then the existing values will not be modified.
+        """
+        # check all keys first so we don't partially overwrite data
+        for k in positions.keys():
+            if k not in self._classes:
+                raise ValueError(f"class {k} is not in {self._classes}")
+
+        for k, v in positions.keys():
+            self._positions[k] = list(v)
+        self._observers.process('pos-set', self.get_positions())
 
     def _on_pick(self, event):
         # On the pick event, find the original line corresponding to the legend
@@ -114,6 +137,7 @@ class clicker:
             return
         self._current_class = klass
         self._update_legend_alpha()
+        self._observers.process('class-changed', klass)
 
     def _update_legend_alpha(self):
         for c in self._classes:
@@ -122,6 +146,13 @@ class clicker:
                 a.set_alpha(alpha)
         self._fig.canvas.draw()
 
+    def _has_cbs(self, name):
+        """return whether there are callbacks registered for the current class"""
+        try:
+            return len(self._observers.callbacks[name]) > 0
+        except KeyError:
+            return False
+
     def _clicked(self, event):
         if not self._fig.canvas.widgetlock.available(self):
             return
@@ -129,6 +160,11 @@ class clicker:
             if event.button is MouseButton.LEFT:
                 self._positions[self._current_class].append((event.xdata, event.ydata))
                 self._update_points(self._current_class)
+                self._observers.process(
+                    'point-added',
+                    (event.xdata, event.ydata),
+                    self._current_class,
+                )
             elif event.button is MouseButton.RIGHT:
                 pos = self._positions[self._current_class]
                 if len(pos) == 0:
@@ -139,8 +175,14 @@ class clicker:
                     axis=-1,
                 )
                 idx = np.argmin(dists[0])
-                pos.pop(idx)
+                removed = pos.pop(idx)
                 self._update_points(self._current_class)
+                self._observers.process(
+                    'point-removed',
+                    removed,
+                    self._current_class,
+                    idx,
+                )
 
     def _update_points(self, klass=None):
         if klass is None:
@@ -154,3 +196,74 @@ class clicker:
                 new_off = np.zeros([0, 2])
             self._lines[c].set_data(new_off.T)
         self._fig.canvas.draw()
+
+    def on_point_added(self, func):
+        """
+        Connect *func* as a callback function to new points being added.
+        *func* will receive the the position of the new point as a tuple (x, y), and
+        the class of the new point.
+
+        Parameters
+        ----------
+        func : callable
+            Function to call when a point is added.
+
+        Returns
+        -------
+        int
+            Connection id (which can be used to disconnect *func*).
+        """
+        return self._observers.connect('point-added', lambda *args: func(*args))
+
+    def on_point_removed(self, func):
+        """
+        Connect *func* as a callback function when points are removed.
+        *func* will receive the the position of the new point, the class of the removed
+        point, the point's index in the old list of points of that class, and the
+        updated dictionary of all points.
+
+        Parameters
+        ----------
+        func : callable
+            Function to call when a point is removed
+
+        Returns
+        -------
+        int
+            Connection id (which can be used to disconnect *func*).
+        """
+        return self._observers.connect('point-removed', lambda *args: func(*args))
+
+    def on_class_changed(self, func):
+        """
+        Connect *func* as a callback function when the current class is changed.
+        *func* will receive the new class.
+
+        Parameters
+        ----------
+        func : callable
+            Function to call when the current class is changed.
+
+        Returns
+        -------
+        int
+            Connection id (which can be used to disconnect *func*).
+        """
+        self._observers.connect('class-changed', lambda klass: func(klass))
+
+    def on_positions_set(self, func):
+        """
+        Connect *func* as a callback function when the *set_positions* function is
+        called. *func* will receive the updated dictionary of all points.
+
+        Parameters
+        ----------
+        func : callable
+            Function to call when *set_positions* is called.
+
+        Returns
+        -------
+        int
+            Connection id (which can be used to disconnect *func*).
+        """
+        return self._observers.connect('pos-set', lambda pos_dict: func(pos_dict))
