@@ -3,8 +3,7 @@
 Basic Usage
 -----------
 
-A short example showcasing how to use the library. The docstrings will be
-turns in REST by sphinx-gallery.
+A short example showcasing how to use the library.
 """
 
 import matplotlib.pyplot as plt

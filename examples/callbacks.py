@@ -13,9 +13,8 @@ import numpy as np
 from typing import Tuple
 from mpl_point_clicker import clicker
 
-from pathlib import Path
 
-image = np.load(Path(__file__).parent / "example_image.npy")
+image = np.load("example_image.npy")
 
 fig, ax = plt.subplots()
 ax.imshow(image, cmap='gray')
