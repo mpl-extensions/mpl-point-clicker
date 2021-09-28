@@ -126,7 +126,7 @@ class clicker:
         for k, v in positions.keys():
             self._positions[k] = list(v)
         self._observers.process('pos-set', self.get_positions())
-            
+
     def _on_pick(self, event):
         # On the pick event, find the original line corresponding to the legend
         # proxy line, and toggle its visibility.

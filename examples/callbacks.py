@@ -7,12 +7,12 @@ Demonstration of how to set up callback functions.
 
 """
 
+from typing import Tuple
+
 import matplotlib.pyplot as plt
 import numpy as np
 
-from typing import Tuple
 from mpl_point_clicker import clicker
-
 
 image = np.load("example_image.npy")
 
