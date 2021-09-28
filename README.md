@@ -19,5 +19,5 @@ pip install mpl_point_clicker
 
 
 ```bash
-pip install -e ".[dev]"
+pip install -e ".[test, doc]"
 ```
