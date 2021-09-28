@@ -114,9 +114,9 @@ class clicker:
         ----------
         positions : dict
             A dictionary with strings as keys and 2D array-like values. The values
-            will be interpreted as (N, 2) with x, y as the columns. The keys in the dictionary
-            must all be valid classes. If a class is not included in *positions* then the existing
-            values will not be modified.
+            will be interpreted as (N, 2) with x, y as the columns. The keys in
+            the dictionary must all be valid classes. If a class is not included in
+            *positions* then the existing values will not be modified.
         """
         # check all keys first so we don't partially overwrite data
         for k in positions.keys():
@@ -218,9 +218,9 @@ class clicker:
     def on_point_removed(self, func):
         """
         Connect *func* as a callback function when points are removed.
-        *func* will receive the the position of the new point, the class of the removed point,
-        the point's index in the old list of points of that class, and the updated dictionary of
-        all points.
+        *func* will receive the the position of the new point, the class of the removed
+        point, the point's index in the old list of points of that class, and the
+        updated dictionary of all points.
 
         Parameters
         ----------
@@ -253,8 +253,8 @@ class clicker:
 
     def on_positions_set(self, func):
         """
-        Connect *func* as a callback function when the *set_positions* function is called.
-        *func* will receive the updated dictionary of all points.
+        Connect *func* as a callback function when the *set_positions* function is
+        called. *func* will receive the updated dictionary of all points.
 
         Parameters
         ----------
