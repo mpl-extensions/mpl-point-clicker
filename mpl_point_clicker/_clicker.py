@@ -103,9 +103,30 @@ class clicker:
         self._update_legend_alpha()
         self._observers = CallbackRegistry()
 
-    def get_positions(self, copy=True):
+    def get_positions(self):
         return {k: np.asarray(v) for k, v in self._positions.items()}
 
+    def set_positions(self, positions):
+        """
+        Set the current positions for all classes.
+
+        Parameters
+        ----------
+        positions : dict
+            A dictionary with strings as keys and 2D array-like values. The values
+            will be interpreted as (N, 2) with x, y as the columns. The keys in the dictionary
+            must all be valid classes. If a class is not included in *positions* then the existing
+            values will not be modified.
+        """
+        # check all keys first so we don't partially overwrite data
+        for k in positions.keys():
+            if k not in self._classes:
+                raise ValueError(f"class {k} is not in {self._classes}")
+
+        for k, v in positions.keys():
+            self._positions[k] = list(v)
+        self._observers.process('pos-set', self.get_positions())
+            
     def _on_pick(self, event):
         # On the pick event, find the original line corresponding to the legend
         # proxy line, and toggle its visibility.
@@ -221,7 +242,7 @@ class clicker:
         Parameters
         ----------
         func : callable
-            Function to call when *set_positions* is called.
+            Function to call when the current class is changed.
 
         Returns
         -------
@@ -229,3 +250,20 @@ class clicker:
             Connection id (which can be used to disconnect *func*).
         """
         self._observers.connect('class-changed', lambda klass: func(klass))
+
+    def on_positions_set(self, func):
+        """
+        Connect *func* as a callback function when the *set_positions* function is called.
+        *func* will receive the updated dictionary of all points.
+
+        Parameters
+        ----------
+        func : callable
+            Function to call when *set_positions* is called.
+
+        Returns
+        -------
+        int
+            Connection id (which can be used to disconnect *func*).
+        """
+        return self._observers.connect('pos-set', lambda pos_dict: func(pos_dict))
