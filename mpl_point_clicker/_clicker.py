@@ -123,7 +123,7 @@ class clicker:
             if k not in self._classes:
                 raise ValueError(f"class {k} is not in {self._classes}")
 
-        for k, v in positions.keys():
+        for k, v in positions.items():
             self._positions[k] = list(v)
         self._observers.process('pos-set', self.get_positions())
 
