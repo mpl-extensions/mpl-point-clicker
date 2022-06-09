@@ -33,7 +33,7 @@ def point_added_cb(position: Tuple[float, float], klass: str):
 def point_removed_cb(position: Tuple[float, float], klass: str, idx):
     x, y = position
 
-    suffix = {1: 'st', 2: 'nd', 3: 'rd'}.get(idx, 'th')
+    suffix = {'1': 'st', '2': 'nd', '3': 'rd'}.get(str(idx)[-1], 'th')
     print(
         f"The {idx}{suffix} point of class {klass} with position {x=:.2f}, {y=:.2f}  was removed"
     )
