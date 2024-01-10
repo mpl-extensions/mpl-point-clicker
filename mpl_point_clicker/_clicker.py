@@ -147,6 +147,23 @@ class clicker:
             self._positions[k] = list(v)
         self._observers.process('pos-set', self.get_positions())
 
+    def clear_positions(self, classes=None):
+        """
+        Clears all points of classes in *classes*. Either all classes or a list of classes.
+
+        Parameters
+        ----------
+        classes : list
+            A list of classes to clear. If None, all classes will be cleared.
+        """
+        if classes is None:
+            classes = list(self._positions.keys())
+
+        for k in classes:
+            self._positions[k].clear()
+
+        self._update_points()
+
     def _on_pick(self, event):
         # On the pick event, find the original line corresponding to the legend
         # proxy line, and toggle its visibility.
