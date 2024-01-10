@@ -17,7 +17,7 @@ class clicker:
     def __init__(
         self,
         ax,
-        classes,
+        classes=None,
         init_class=None,
         markers=None,
         colors=None,
@@ -31,6 +31,7 @@ class clicker:
         ----------
         ax : matplotlib axis
         classes : int or list
+            default is 1
         init_class : int, or str, optional
             The initial class to use, otherwise will be the first
             class in *classes*
@@ -47,6 +48,9 @@ class clicker:
             Line2D objects (from ax.plot) are used to generate the markers.
             line_kwargs will be passed through to all of the `ax.plot` calls.
         """
+        if classes is None:
+            classes = 1
+
         if isinstance(classes, Integral):
             self._classes = list(range(classes))
         else:
