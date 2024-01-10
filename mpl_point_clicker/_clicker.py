@@ -21,6 +21,7 @@ class clicker:
         init_class=None,
         markers=None,
         colors=None,
+        disable_legend=None,
         legend_bbox=(1.04, 1),
         legend_loc="upper left",
         pick_dist=10,
@@ -38,6 +39,8 @@ class clicker:
         markers : list
             The marker styles to use.
         colors : list
+        disable_legend : bool
+            disable to show the classes in the legend, default is False
         legend_bbox : tuple
             bbox to use for the legend
         legend_loc : str or int
@@ -50,6 +53,7 @@ class clicker:
         """
         if classes is None:
             classes = 1
+            disable_legend = True
 
         if isinstance(classes, Integral):
             self._classes = list(range(classes))
@@ -70,35 +74,47 @@ class clicker:
             colors = [None] * len(self._classes)
         if markers is None:
             markers = ["o"] * len(self._classes)
+        if disable_legend is None:
+            disable_legend = False
+        if disable_legend and len(self._classes) != 1:
+            disable_legend = False
+
+        self._disable_legend = disable_legend
 
         self.ax = ax
         self._lines = {}
         linestyle = line_kwargs.pop("linestyle", "")
         for i, c in enumerate(self._classes):
+            label = c
+            if disable_legend:
+                label = None
             (self._lines[c],) = self.ax.plot(
                 [],
                 [],
                 color=colors[i],
                 marker=markers[i],
-                label=c,
+                label=label,
                 linestyle=linestyle,
                 **line_kwargs,
             )
-        self._leg = self.ax.legend(bbox_to_anchor=legend_bbox, loc=legend_loc)
-        self._leg_artists = {}
-        self._class_leg_artists = {}
-        for legline, legtext, klass in zip(
-            self._leg.get_lines(), self._leg.get_texts(), self._classes
-        ):
-            legline.set_picker(pick_dist)
-            legtext.set_picker(pick_dist)
-            self._leg_artists[legtext] = klass
-            self._leg_artists[legline] = klass
-            try:
-                # mpl < 3.5
-                self._class_leg_artists[klass] = (legline, legline._legmarker, legtext)
-            except AttributeError:
-                self._class_leg_artists[klass] = (legline, legtext)
+
+        if not self._disable_legend:
+            self._leg = self.ax.legend(bbox_to_anchor=legend_bbox, loc=legend_loc)
+            self._leg_artists = {}
+            self._class_leg_artists = {}
+
+            for legline, legtext, klass in zip(
+                    self._leg.get_lines(), self._leg.get_texts(), self._classes
+            ):
+                legline.set_picker(pick_dist)
+                legtext.set_picker(pick_dist)
+                self._leg_artists[legtext] = klass
+                self._leg_artists[legline] = klass
+                try:
+                    # mpl < 3.5
+                    self._class_leg_artists[klass] = (legline, legline._legmarker, legtext)
+                except AttributeError:
+                    self._class_leg_artists[klass] = (legline, legtext)
 
         self._fig = self.ax.figure
         self._fig.canvas.mpl_connect("button_press_event", self._clicked)
@@ -144,6 +160,8 @@ class clicker:
         self._observers.process('class-changed', klass)
 
     def _update_legend_alpha(self):
+        if self._disable_legend:
+            return
         for c in self._classes:
             alpha = 1 if c == self._current_class else 0.2
             for a in self._class_leg_artists[c]:
