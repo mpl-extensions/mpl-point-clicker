@@ -104,7 +104,7 @@ class clicker:
             self._class_leg_artists = {}
 
             for legline, legtext, klass in zip(
-                    self._leg.get_lines(), self._leg.get_texts(), self._classes
+                self._leg.get_lines(), self._leg.get_texts(), self._classes
             ):
                 legline.set_picker(pick_dist)
                 legtext.set_picker(pick_dist)
@@ -112,7 +112,11 @@ class clicker:
                 self._leg_artists[legline] = klass
                 try:
                     # mpl < 3.5
-                    self._class_leg_artists[klass] = (legline, legline._legmarker, legtext)
+                    self._class_leg_artists[klass] = (
+                        legline,
+                        legline._legmarker,
+                        legtext,
+                    )
                 except AttributeError:
                     self._class_leg_artists[klass] = (legline, legtext)
 
