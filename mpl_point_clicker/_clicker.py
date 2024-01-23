@@ -17,11 +17,11 @@ class clicker:
     def __init__(
         self,
         ax,
-        classes=None,
+        classes=1,
         init_class=None,
         markers=None,
         colors=None,
-        disable_legend=None,
+        disable_legend=False,
         legend_bbox=(1.04, 1),
         legend_loc="upper left",
         pick_dist=10,
@@ -39,8 +39,8 @@ class clicker:
         markers : list
             The marker styles to use.
         colors : list
-        disable_legend : bool
-            disable to show the classes in the legend, default is False
+        disable_legend : bool, default False
+            If *True* do not display the legend.
         legend_bbox : tuple
             bbox to use for the legend
         legend_loc : str or int
@@ -51,10 +51,6 @@ class clicker:
             Line2D objects (from ax.plot) are used to generate the markers.
             line_kwargs will be passed through to all of the `ax.plot` calls.
         """
-        if classes is None:
-            classes = 1
-            disable_legend = True
-
         if isinstance(classes, Integral):
             self._classes = list(range(classes))
         else:
@@ -74,10 +70,6 @@ class clicker:
             colors = [None] * len(self._classes)
         if markers is None:
             markers = ["o"] * len(self._classes)
-        if disable_legend is None:
-            disable_legend = False
-        if disable_legend and len(self._classes) != 1:
-            disable_legend = False
 
         self._disable_legend = disable_legend
 
@@ -86,8 +78,6 @@ class clicker:
         linestyle = line_kwargs.pop("linestyle", "")
         for i, c in enumerate(self._classes):
             label = c
-            if disable_legend:
-                label = None
             (self._lines[c],) = self.ax.plot(
                 [],
                 [],
@@ -151,22 +141,27 @@ class clicker:
             self._positions[k] = list(v)
         self._observers.process('pos-set', self.get_positions())
 
-    def clear_positions(self, classes=None):
+    def clear_positions(self, classes: str | list[str] | None=None):
         """
-        Clears all points of classes in *classes*. Either all classes or a list of classes.
+        Clear all points of classes in *classes*. 
+
+        Either all classes or a list of classes.
 
         Parameters
         ----------
-        classes : list
-            A list of classes to clear. If None, all classes will be cleared.
+        classes : list, str, optional
+            A list, or single, of classes to clear. If None, all classes will be cleared.
         """
         if classes is None:
             classes = list(self._positions.keys())
+        elif isinstance(classes, str):
+            classes = [classes]
 
         for k in classes:
             self._positions[k].clear()
 
         self._update_points()
+        self._observers.process('pos-set', self.get_positions())
 
     def _on_pick(self, event):
         # On the pick event, find the original line corresponding to the legend
