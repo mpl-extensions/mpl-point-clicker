@@ -141,9 +141,9 @@ class clicker:
             self._positions[k] = list(v)
         self._observers.process('pos-set', self.get_positions())
 
-    def clear_positions(self, classes: str | list[str] | None=None):
+    def clear_positions(self, classes: str | list[str] | None = None):
         """
-        Clear all points of classes in *classes*. 
+        Clear all points of classes in *classes*.
 
         Either all classes or a list of classes.
 
