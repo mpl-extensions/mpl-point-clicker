@@ -7,11 +7,12 @@ __all__ = [
     "clicker",
 ]
 from numbers import Integral
+from typing import Union
 
 import numpy as np
 from matplotlib.backend_bases import MouseButton
 from matplotlib.cbook import CallbackRegistry
-from typing import Union
+
 
 class clicker:
     def __init__(
