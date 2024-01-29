@@ -11,7 +11,7 @@ from numbers import Integral
 import numpy as np
 from matplotlib.backend_bases import MouseButton
 from matplotlib.cbook import CallbackRegistry
-
+from typing import Union
 
 class clicker:
     def __init__(
@@ -141,7 +141,7 @@ class clicker:
             self._positions[k] = list(v)
         self._observers.process('pos-set', self.get_positions())
 
-    def clear_positions(self, classes: str | list[str] | None = None):
+    def clear_positions(self, classes: Union[str, list[str], None] = None):
         """
         Clear all points of classes in *classes*.
 
