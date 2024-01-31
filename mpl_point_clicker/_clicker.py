@@ -2,6 +2,7 @@
 
 # Copyright (c) Ian Hunt-Isaak.
 # Distributed under the terms of the Modified BSD License.
+from __future__ import annotations
 
 __all__ = [
     "clicker",
