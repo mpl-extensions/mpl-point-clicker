@@ -3,6 +3,7 @@
 # Copyright (c) Ian Hunt-Isaak.
 # Distributed under the terms of the Modified BSD License.
 from __future__ import annotations
+
 __all__ = [
     "clicker",
 ]
@@ -141,7 +142,7 @@ class clicker:
             self._positions[k] = list(v)
         self._observers.process('pos-set', self.get_positions())
 
-    def clear_positions(self, classes: str | list[str] | None  = None):
+    def clear_positions(self, classes: str | list[str] | None = None):
         """
         Clear all points of classes in *classes*.
 
